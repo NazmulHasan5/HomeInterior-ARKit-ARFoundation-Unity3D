@@ -59,6 +59,9 @@ class ServerResponseData
     public string message;
     public string token;
     public bool auth;
+    public string name;
+    public string email;
+    public int balance;
 }
 
 
@@ -115,10 +118,14 @@ public class ApplicationStates : MonoBehaviour
     [SerializeField]
     GameObject applicationSigninLoginCanvas;
 
+    //CanvasBehaviorController Script to update user data;
+    [SerializeField]
+    CanvasBehaviorController canvasBehaviorController;
 
     // Start is called before the first frame update
     void Start()
     {
+
 
         if (!PlayerPrefs.HasKey("Login"))
         {
@@ -207,7 +214,7 @@ public class ApplicationStates : MonoBehaviour
             if (req.isDone)
             {
                 Debug.Log("Application Login sucessful starting application");
-                // show the highscores
+               
                 // Debug.Log(req.downloadHandler.text);
                 ServerResponseData serverResponseData = new ServerResponseData();
                 serverResponseData = JsonUtility.FromJson<ServerResponseData>(req.downloadHandler.text);
@@ -223,19 +230,26 @@ public class ApplicationStates : MonoBehaviour
                     {
                         PlayerPrefs.SetInt("Login", 1);
                         PlayerPrefs.SetString("Token", token);
+                        
                     }
+                    PlayerPrefs.SetString("ProfileData", req.downloadHandler.text);
                     Invoke("Hide",.2f);
                     applicationSigninLoginCanvas.SetActive(false);
                 }
                 else
                 {
                     ResendOTP();
-                }
-
-                
+                }    
             }
 
         }
+    }
+
+    void Hide()
+    {
+        canvasBehaviorController.enabled = true;
+        applicationCanvas.SetActive(true);
+        applicationsBehavior.enabled = true;
     }
 
 
@@ -352,12 +366,7 @@ public class ApplicationStates : MonoBehaviour
 
     
 
-    void Hide()
-    {
-        
-        applicationCanvas.SetActive(true);
-        applicationsBehavior.enabled = true;
-    }
+  
 
     /*IEnumerator LoginReq()
     {

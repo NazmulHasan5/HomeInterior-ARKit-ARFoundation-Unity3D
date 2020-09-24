@@ -291,10 +291,10 @@ public class ApplicationsBehavior : MonoBehaviour
             t += Time.deltaTime / seconds;
 
             objectsPanel.localPosition = Vector3.Lerp(startPos, endPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
 
-            
         }
-        yield return null;
+       
 
     }
 
