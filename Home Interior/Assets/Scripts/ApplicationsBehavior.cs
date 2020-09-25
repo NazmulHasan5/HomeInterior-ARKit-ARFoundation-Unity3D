@@ -41,7 +41,11 @@ public class ApplicationsBehavior : MonoBehaviour
 
     public bool planeScane = false;
 
- 
+    [Header("On Object Placed Active thouse Canves Objects")]
+    [SerializeField]
+    GameObject profileButton;
+    [SerializeField]
+    GameObject snapShortButton;
 
     void FixedUpdate()
     {
@@ -120,6 +124,10 @@ public class ApplicationsBehavior : MonoBehaviour
             AddObjBTN.SetActive(true);
             objectToPlace = null;
             placementIndecator.SetActive(false);
+
+            //profile panel button
+            profileButton.SetActive(true);
+            //snapShortButton.SetActive(true);
         }
 
         private void UpdatePlacementIndecator()
@@ -304,5 +312,6 @@ public class ApplicationsBehavior : MonoBehaviour
         objectToPlace = obj;
         planeScane = true;
         SelectedObject();
+        Debug.Log("Working");
     }
 }

@@ -115,6 +115,11 @@ public class ApplicationStates : MonoBehaviour
     [SerializeField]
     ApplicationsBehavior applicationsBehavior;
     //application signin login canvas
+    [Header("Application Canvas Objects")]
+
+    [SerializeField]
+    GameObject applicationMainCanvas;
+
     [SerializeField]
     GameObject applicationSigninLoginCanvas;
 
@@ -122,15 +127,26 @@ public class ApplicationStates : MonoBehaviour
     [SerializeField]
     CanvasBehaviorController canvasBehaviorController;
 
+    [Header("Splash Canvas")]
+    [SerializeField]
+    GameObject splashCanvas;
+
     // Start is called before the first frame update
     void Start()
     {
 
+        Invoke("AppSplash",2f);
+        
+    }
+
+    void AppSplash()
+    {
 
         if (!PlayerPrefs.HasKey("Login"))
         {
             PlayerPrefs.SetInt("Login", 0);
             applicationSigninLoginCanvas.SetActive(true);
+            splashCanvas.SetActive(false);
         }
         else
         {
@@ -145,14 +161,14 @@ public class ApplicationStates : MonoBehaviour
                 StartCoroutine(TokenSessionCheck(token));
             }
 
-            if(applicationLoginStatus == 0)
+            if (applicationLoginStatus == 0)
             {
                 Debug.Log("Application opened for 1st time");
                 applicationSigninLoginCanvas.SetActive(true);
+                splashCanvas.SetActive(false);
             }
         }
     }
-
 
     IEnumerator TokenSessionCheck(string token)
     {
@@ -168,6 +184,7 @@ public class ApplicationStates : MonoBehaviour
             PlayerPrefs.SetString("Token", null);
             PlayerPrefs.SetInt("Login",0);
             applicationSigninLoginCanvas.SetActive(true);
+            splashCanvas.SetActive(false);
         }
         else
         {
@@ -183,6 +200,8 @@ public class ApplicationStates : MonoBehaviour
                 applicationSigninLoginCanvas.SetActive(false);
                 applicationCanvas.SetActive(true);
                 applicationsBehavior.enabled = true;
+                canvasBehaviorController.enabled = true;
+                splashCanvas.SetActive(false);
             }
         }
     }
@@ -208,11 +227,13 @@ public class ApplicationStates : MonoBehaviour
         {
             Debug.Log("Application Login failed Try again");
             print("Error downloading: " + req.error + "   " + req.downloadHandler.text);
+            loginPassword.text = null;
         }
         else
         {
             if (req.isDone)
             {
+                loginPassword.text = null;
                 Debug.Log("Application Login sucessful starting application");
                
                 // Debug.Log(req.downloadHandler.text);
@@ -233,8 +254,10 @@ public class ApplicationStates : MonoBehaviour
                         
                     }
                     PlayerPrefs.SetString("ProfileData", req.downloadHandler.text);
+                    canvasBehaviorController.enabled = true;
                     Invoke("Hide",.2f);
                     applicationSigninLoginCanvas.SetActive(false);
+
                 }
                 else
                 {
