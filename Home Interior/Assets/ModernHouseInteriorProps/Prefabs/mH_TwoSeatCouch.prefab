@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3303574}
   - component: {fileID: 2394244}
   - component: {fileID: 645908257028156840}
+  - component: {fileID: 4260585800430567168}
   m_Layer: 0
   m_Name: mH_TwoSeatCouch
   m_TagString: MoveAble
@@ -94,3 +95,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.8066497, y: 1.2620604, z: 1.6404617}
   m_Center: {x: 0, y: 0.6310302, z: 0}
+--- !u!114 &4260585800430567168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4e24e0fcf905a438083fb6d3794ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Sofa
+  itemPrice: 53500
+  itemImage: {fileID: 21300000, guid: 5e277a8ff696cb74ab307add29542e27, type: 3}

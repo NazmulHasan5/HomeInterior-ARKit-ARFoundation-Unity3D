@@ -174,7 +174,7 @@ public class ApplicationStates : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson(new TokenJson(token));
 
-        UnityWebRequest req = UnityWebRequest.Put("http://127.0.0.1:8080/auth/validate-login-session", jsonData);
+        UnityWebRequest req = UnityWebRequest.Put("/auth/validate-login-session", jsonData);
         req.SetRequestHeader("Content-Type", "application/json");
         yield return req.SendWebRequest();
 
@@ -217,7 +217,7 @@ public class ApplicationStates : MonoBehaviour
 
         string json = JsonUtility.ToJson(new LoginFormJson(loginEmail.text, loginPassword.text));
         Debug.Log(json);
-        UnityWebRequest req = UnityWebRequest.Put("http://127.0.0.1:8080/auth/login", json);
+        UnityWebRequest req = UnityWebRequest.Put("/auth/login", json);
         req.SetRequestHeader("Content-Type", "application/json");
         //req.method = "POST";
 
@@ -253,6 +253,7 @@ public class ApplicationStates : MonoBehaviour
                         PlayerPrefs.SetString("Token", token);
                         
                     }
+                    Debug.Log(req.downloadHandler.text);
                     PlayerPrefs.SetString("ProfileData", req.downloadHandler.text);
                     canvasBehaviorController.enabled = true;
                     Invoke("Hide",.2f);
@@ -286,7 +287,7 @@ public class ApplicationStates : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson(new TokenJson(token));
 
-        UnityWebRequest req = UnityWebRequest.Put("http://127.0.0.1:8080/auth/resend-otp", jsonData);
+        UnityWebRequest req = UnityWebRequest.Put("/auth/resend-otp", jsonData);
         req.SetRequestHeader("Content-Type", "application/json");
 
         yield return req.SendWebRequest();
@@ -325,7 +326,7 @@ public class ApplicationStates : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson(new SignupFormJson(signupName.text, signupEmail.text, signupPassword.text));
 
-        UnityWebRequest req = UnityWebRequest.Put("http://127.0.0.1:8080/auth/signup", jsonData);
+        UnityWebRequest req = UnityWebRequest.Put("/auth/signup", jsonData);
         req.SetRequestHeader("Content-Type", "application/json");
 
         yield return req.SendWebRequest();
@@ -364,7 +365,7 @@ public class ApplicationStates : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson( new OTPFormJson(token, int.Parse(OTPCode.text)) );
 
-        UnityWebRequest req = UnityWebRequest.Put("http://127.0.0.1:8080/auth/auth-user", jsonData);
+        UnityWebRequest req = UnityWebRequest.Put("/auth/auth-user", jsonData);
         req.SetRequestHeader("Content-Type", "application/json");
 
         yield return req.SendWebRequest();
@@ -396,7 +397,7 @@ public class ApplicationStates : MonoBehaviour
         WWWForm body = new WWWForm();
         body.AddField("email", "nazmulimm@gmail.com");
         body.AddField("password","test123");
-        using(UnityWebRequest req = UnityWebRequest.Post("http://127.0.0.1:8080/auth/login", body))
+        using(UnityWebRequest req = UnityWebRequest.Post("/auth/login", body))
         {
             req.SetRequestHeader("Content-Type", "application/json");
             yield return req.Send();
@@ -506,11 +507,11 @@ public class ApplicationStates : MonoBehaviour
         Vector3 newPos = new Vector3(xpos, presentPosition.y, presentPosition.z);
         Vector3 newScale = new Vector3(scale, scale, 1);
 
-        StartCoroutine(SmoothTransationOTPToLogin(presentPosition, newPos, easing, presentScale, newScale));
+        StartCoroutine(SmoothTranslationOTPToLogin(presentPosition, newPos, easing, presentScale, newScale));
     }
 
 
-    IEnumerator SmoothTransationOTPToLogin(Vector3 startPos, Vector3 endPos, float secounds, Vector3 startScale, Vector3 endScale)
+    IEnumerator SmoothTranslationOTPToLogin(Vector3 startPos, Vector3 endPos, float secounds, Vector3 startScale, Vector3 endScale)
     {
         float t = 0f;
 

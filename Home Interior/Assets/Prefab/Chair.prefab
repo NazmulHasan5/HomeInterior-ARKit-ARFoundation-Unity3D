@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3493092305174460373}
   - component: {fileID: 8772018511142348206}
+  - component: {fileID: 1663939493422419845}
   m_Layer: 0
   m_Name: Chair
   m_TagString: MoveAble
@@ -47,6 +48,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.7164049, y: 2.3143747, z: 1.6956345}
   m_Center: {x: 0.0022305094, y: 1.2846985, z: -0.04997778}
+--- !u!114 &1663939493422419845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4265511780452838767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4e24e0fcf905a438083fb6d3794ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Aram Chair
+  itemPrice: 4300
+  itemImage: {fileID: 21300000, guid: 2894663287a42b543bd169d98a3cb1ad, type: 3}
 --- !u!1 &5870379749412032551
 GameObject:
   m_ObjectHideFlags: 0

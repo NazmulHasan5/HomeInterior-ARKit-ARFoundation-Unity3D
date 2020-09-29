@@ -260,6 +260,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1663009488511720708}
   - component: {fileID: 2738933714415074412}
+  - component: {fileID: 3838734590655155657}
   m_Layer: 0
   m_Name: Lamp
   m_TagString: MoveAble
@@ -305,6 +306,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.3987079, y: 5.671603, z: 4.1775093}
   m_Center: {x: 0, y: 3.5608315, z: 0.049165476}
+--- !u!114 &3838734590655155657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044602332211578814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4e24e0fcf905a438083fb6d3794ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Light
+  itemPrice: 1500
+  itemImage: {fileID: 21300000, guid: b8e24bb837a38dd45904b33b9f47ae22, type: 3}
 --- !u!1 &2408279023622809602
 GameObject:
   m_ObjectHideFlags: 0

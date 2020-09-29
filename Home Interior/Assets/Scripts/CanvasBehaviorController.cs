@@ -5,7 +5,16 @@ using TMPro;
 using UnityEngine.UI;
 
 
-[SelectionBase]
+[System.Serializable]
+class Canv
+{
+    public string orderDate;
+    public int orderId;
+    public int price;
+
+}
+
+[System.Serializable]
 class ProfileData
 {
     public string message;
@@ -14,6 +23,7 @@ class ProfileData
     public string name;
     public string email;
     public int balance;
+    public Canv[] orders;
 }
 
 
@@ -64,6 +74,16 @@ public class CanvasBehaviorController : MonoBehaviour
     [SerializeField]
     GameObject applicationLoginSignupCanves;
 
+    [Header("My Orders Panal")]
+
+    [SerializeField]
+    RectTransform myOrdersPanal;
+    [SerializeField]
+    GameObject orderPrefab;
+    [SerializeField]
+    RectTransform ordersContainer;
+    [SerializeField]
+    Vector2 ordersContainerSizeDelta;
     
 
     [Tooltip("Login panal")]
@@ -128,8 +148,21 @@ public class CanvasBehaviorController : MonoBehaviour
     public Sprite[] sofaTexture;
     public Sprite[] wardropeTexture;
 
-    public Sprite[] ii;
+    [Header("Scane Hand")]
+    [SerializeField]
+    RectTransform scaneHand;
 
+    [Header("Position Indicator")]
+    [SerializeField]
+    GameObject positoinIndicator;
+
+    private float RotateSpeed = 5f;
+    private float Radius = 40f;
+    private Vector3 centre;
+    private float angle;
+
+    private bool scanHandOneTime = false;
+    
     void Start()
     {
         /*
@@ -139,6 +172,8 @@ public class CanvasBehaviorController : MonoBehaviour
 
         Debug.Log(profileData.auth+ " " + profileData.name + " " + profileData.email + " " + profileData.balance + " " );
         */
+        centre = scaneHand.localPosition;
+        ordersContainerSizeDelta = ordersContainer.sizeDelta;
     }
 
     // Update is called once per frame
@@ -162,9 +197,38 @@ public class CanvasBehaviorController : MonoBehaviour
        
         Debug.Log("Testing");
         */
+ 
 
+        
     }
 
+    public void RotateHandIndecator()
+    {
+        if (scanHandOneTime) {
+            return;
+        }
+        
+        scaneHand.gameObject.SetActive(true);
+        StartCoroutine(HandRotationTimer());
+    }
+
+    IEnumerator HandRotationTimer()
+    {
+        float t = 0f;
+        while (t <= 4f)
+        {
+            positoinIndicator.SetActive(false);
+            Debug.Log("AlsoWorking");
+            t += Time.deltaTime;
+            angle += RotateSpeed * Time.deltaTime;
+            var offset = new Vector3(Mathf.Sin(angle), Mathf.Cos(angle), 0) * Radius;
+            scaneHand.localPosition = centre + offset;
+            yield return null;
+        }
+        scanHandOneTime = true;
+        positoinIndicator.SetActive(true);
+        scaneHand.gameObject.SetActive(false);
+    }
     //Logout
     public void Logout()
     {
@@ -177,9 +241,18 @@ public class CanvasBehaviorController : MonoBehaviour
     public void SetProfilePanalData()
     {
         //Set name and belance in profile panal
+        Debug.Log(PlayerPrefs.GetString("ProfileData"));
         ProfileData profileData = JsonUtility.FromJson<ProfileData>(PlayerPrefs.GetString("ProfileData"));
         profileName.text = profileData.name;
         profileBalance.text = "Balance: "+ profileData.balance + " BDT";
+
+        Debug.Log("The date is working: " + profileData.orders[0].orderDate);
+        
+       //Debug.Log("Token: " + profileData.token + "\n" + profileData.orders.Length);
+        for (int i = 0; i < profileData.orders.Length; i++)
+        {
+            Debug.Log(profileData.orders[i].orderId + "  " + profileData.orders[i].orderDate + "  " + profileData.orders[i].price);
+        }
     }
 
     public void ShowProfile()
@@ -344,6 +417,62 @@ public class CanvasBehaviorController : MonoBehaviour
             itemPanal.localPosition = Vector3.Lerp(startPos, endPos, Mathf.SmoothStep(0f, 1f, t));
             yield return null;
         }
+        RotateHandIndecator();
     }
 
+
+    //Profile to MyOrder Panal MyOrder Panal To Profile Panal;
+    
+    public void LoadMyOrderData()
+    {
+        ProfileData myOrders = JsonUtility.FromJson<ProfileData>(PlayerPrefs.GetString("ProfileData"));
+        Debug.Log(myOrders.orders.Length);
+        for(int i = 0; i< myOrders.orders.Length; i++)
+        {
+            GameObject order = Instantiate(orderPrefab, ordersContainer.transform);
+            order.transform.GetChild(0).GetComponent<TMP_Text>().text = "order id: #" + myOrders.orders[i].orderId ;
+            order.transform.GetChild(1).GetComponent<TMP_Text>().text =  myOrders.orders[i].orderDate;
+            order.transform.GetChild(2).GetComponent<TMP_Text>().text = myOrders.orders[i].price + " BDT";
+            ordersContainer.sizeDelta = new Vector2(ordersContainer.sizeDelta.x, ordersContainer.sizeDelta.y + 150f);
+        }
+    }
+
+    public void ProfileToMyOrdersPanal()
+    {
+        float xPos = 0f;
+        Vector3 presentPosition = myOrdersPanal.localPosition;
+
+        if (presentPosition.x == 0f)
+        {
+            xPos = Screen.width;
+        }
+
+        Vector3 newPosition = new Vector3(xPos, presentPosition.y, presentPosition.z);
+
+        StartCoroutine(SmoothTranslationProfileToMyOrderPanal(presentPosition, newPosition, easing, xPos));
+    }
+    IEnumerator SmoothTranslationProfileToMyOrderPanal(Vector3 startPos, Vector3 endPos, float seconds, float xPos)
+    {
+        float t = 0f;
+        while (t <= 1f)
+        {
+            t += Time.deltaTime / seconds;
+
+            myOrdersPanal.localPosition = Vector3.Lerp(startPos, endPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        if (xPos == Screen.width)
+        {
+
+            int childCount = ordersContainer.gameObject.transform.childCount;
+
+            for (int i = 0; i < childCount; i++)
+            {
+                Destroy(ordersContainer.gameObject.transform.GetChild(i).gameObject);
+            }
+
+            ordersContainer.sizeDelta = ordersContainerSizeDelta;
+        }
+    }
 }

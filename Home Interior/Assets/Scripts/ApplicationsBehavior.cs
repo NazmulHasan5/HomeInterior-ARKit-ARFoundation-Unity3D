@@ -33,7 +33,7 @@ public class ApplicationsBehavior : MonoBehaviour
     [SerializeField] GameObject editCanvas;
 
 
-    [SerializeField] GameObject editPanel;
+    [SerializeField] RectTransform editPanel;
 
     public bool modeRotate = false, modeMove = false;
 
@@ -47,6 +47,12 @@ public class ApplicationsBehavior : MonoBehaviour
     [SerializeField]
     GameObject snapShortButton;
 
+    [Header("Application Controller")]
+    [SerializeField]
+    CanvasBehaviorController canvasBehaviorController;
+    [SerializeField]
+    CheckOutController checkOutController;
+
     void FixedUpdate()
     {
         
@@ -57,6 +63,8 @@ public class ApplicationsBehavior : MonoBehaviour
            if (placementPostIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
            {
                PlaceObject();
+               Debug.Log("Working");
+               
            }
         
         }
@@ -86,12 +94,14 @@ public class ApplicationsBehavior : MonoBehaviour
                             }
                         }
                     }
+                    /*
                     else if(touch.tapCount == 2 && touch.phase == TouchPhase.Ended)
                     {
                         snapShot.TakePicture();
                         
                         
                     }
+                    */
                 }
             }
             else
@@ -127,7 +137,7 @@ public class ApplicationsBehavior : MonoBehaviour
 
             //profile panel button
             profileButton.SetActive(true);
-            //snapShortButton.SetActive(true);
+            snapShortButton.SetActive(true);
         }
 
         private void UpdatePlacementIndecator()
@@ -171,8 +181,9 @@ public class ApplicationsBehavior : MonoBehaviour
     {
         modeRotate = false;
         modeMove = false;
-        AddObjBTN.SetActive(true);
-        editPanel.SetActive(false);
+        //AddObjBTN.SetActive(true);
+        //editPanel.SetActive(false);
+        EditPanelTransation();
         Destroy(editAbleObject);
         editAbleObject = null;
         edit = false;
@@ -200,8 +211,9 @@ public class ApplicationsBehavior : MonoBehaviour
 
         editAbleObject = null;
         edit = false;
-        AddObjBTN.SetActive(true);
-        editPanel.SetActive(false);
+       // AddObjBTN.SetActive(true);
+        //editPanel.SetActive(false);
+        EditPanelTransation();
         modeRotate = false;
         modeMove = false;
 
@@ -250,8 +262,14 @@ public class ApplicationsBehavior : MonoBehaviour
     private void EditTag()
     {
 
-        editPanel.SetActive(true);
-        AddObjBTN.SetActive(false);
+        //editPanel.SetActive(true);
+
+        EditPanelTransation();
+
+
+        //AddObjBTN.SetActive(false);
+        //profileButton.SetActive(false);
+       // snapShortButton.SetActive(false);
 
         Renderer[] rendT = editAbleObject.GetComponentsInChildren<Renderer>();
         for (int i = 0; i < rendT.Length; i++)
@@ -267,8 +285,44 @@ public class ApplicationsBehavior : MonoBehaviour
         }
     }
 
+    public void EditPanelTransation()
+    {
+        float yPos = -615f;
+        Vector3 presentPosition = editPanel.localPosition;
 
-    public void AddObjectPanel()
+        if(presentPosition.y == yPos)
+        {
+            yPos = -465;
+            AddObjBTN.SetActive(false);
+            profileButton.SetActive(false);
+            snapShortButton.SetActive(false);
+        }
+
+        Vector3 newPosition = new Vector3(presentPosition.x, yPos, presentPosition.z);
+
+        StartCoroutine(SmoothTransationEditPanel(presentPosition, newPosition, easing, yPos));
+    }
+
+    IEnumerator SmoothTransationEditPanel(Vector3 prePos, Vector3 newPos, float secounds, float yPos)
+    {
+        float t = 0f;
+        while (t <= 1)
+        {
+            t += Time.deltaTime / secounds;
+            editPanel.localPosition = Vector3.Lerp(prePos, newPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        if(yPos == -615f)
+        {
+            AddObjBTN.SetActive(true);
+            profileButton.SetActive(true);
+            snapShortButton.SetActive(true);
+        }
+    }
+
+
+        public void AddObjectPanel()
     {
 
         Vector3 localPosition = objectsPanel.localPosition;
@@ -313,5 +367,19 @@ public class ApplicationsBehavior : MonoBehaviour
         planeScane = true;
         SelectedObject();
         Debug.Log("Working");
+    }
+
+    public void AddItemToCart()
+    {
+
+        checkOutController.AddProductToCart(editAbleObject.GetComponent<ItemDetails>());
+    }
+
+    public void TestAddItemToCart(GameObject test)
+    {
+        GameObject i = Instantiate(test, transform);
+
+
+        checkOutController.AddProductToCart(i.GetComponent<ItemDetails>());
     }
 }
